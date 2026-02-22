@@ -38,3 +38,4 @@ def save_to_google_sheets(df: pd.DataFrame, spreadsheet_id: str, worksheet_name:
         ws = sh.add_worksheet(title=worksheet_name, rows=1000, cols=20)
 
     ws.update([df.columns.tolist()] + df.astype(str).values.tolist())
+    

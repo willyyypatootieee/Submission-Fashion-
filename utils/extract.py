@@ -66,3 +66,46 @@ def parse_product_card(card: Tag, ts: str) -> Optional[Dict[str, str]]:
         }
     except ExtractError:
         return None
+    
+def parse_page(html: str, ts: str) -> List[Dict[str, str]]:
+    soup = BeautifulSoup(html, "lxml")
+    cards: List[Tag] = []
+
+    for selector in [".collection-card", ".product-card", ".card", "article"]:
+        found = soup.select(selector)
+        if found:
+            cards = found
+            break
+
+    rows: List[Dict[str, str]] = []
+    for card in cards:
+        row = parse_product_card(card, ts)
+        if row:
+            rows.append(row)
+    return rows
+
+
+def scrape_products(start_page: int = 1, end_page: int = 50, delay_sec: float = 0.1) -> List[Dict[str, str]]:
+    if start_page < 1 or end_page < start_page:
+        raise ValueError("Invalid page range")
+
+    ts = datetime.now().isoformat(timespec="seconds")
+    results: List[Dict[str, str]] = []
+
+    session = requests.Session()
+    session.headers.update(
+        {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/122 Safari/537.36"}
+    )
+
+    for page in range(start_page, end_page + 1):
+        url = build_page_url(page)
+        try:
+            html = fetch_html(session, url)
+            rows = parse_page(html, ts)
+            results.extend(rows)
+            print(f"[EXTRACT] page={page}, rows={len(rows)}")
+        except Exception as exc:
+            print(f"[EXTRACT][WARN] page={page}, error={exc}")
+        time.sleep(delay_sec)
+
+    return results

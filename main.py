@@ -33,7 +33,7 @@ def run_pipeline(start_page: int, end_page: int, output_csv: str, raw_csv: str) 
         return 0
 
     except Exception as exc:
-        print(f"[MAIN][ERROR] {exc}")
+        print(f"{exc}")
         return 1
     
 if __name__ == "__main__":
