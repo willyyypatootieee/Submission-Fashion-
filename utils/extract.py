@@ -14,8 +14,10 @@ class ExtractError(Exception):
 
 def build_page_url(page: int) -> str:
     if page < 1:
-        raise ValueError("Page number must be >= 1")
-    return f"{BASE_URL}" if page == 1 else f"{BASE_URL}/page/{page}"
+        raise ValueError("page must be >= 1")
+    if page == 1:
+        return f"{BASE_URL}/"
+    return f"{BASE_URL}/page{page}"
 
 def fetch_html(session: requests.Session, url: str) -> str:
     try:
