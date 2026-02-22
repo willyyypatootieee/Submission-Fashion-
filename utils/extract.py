@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup, Tag
 BASE_URL = "https://fashion-studio.dicoding.dev"
 TIMEOUT = 20
 
-class ExtractError(exception):
+class ExtractError(Exception):
     pass
 
 def build_page_url(page: int) -> str:
